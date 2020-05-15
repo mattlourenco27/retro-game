@@ -38,10 +38,21 @@ function begin() {
   var player_paddle = new Paddle(court.clientWidth / 60);
   var opponent_paddle = new Paddle(court.clientWidth * 59 / 60);
 
-  // draw a line
-  context.moveTo(0, 0);
-  context.lineTo(court.clientWidth, court.clientHeight);
-  //context.stroke();
+  var score = {
+    player: 0,
+    px: court.clientWidth / 4,
+    py: court.clientHeight / 5,
+    ai: 0,
+    ax: court.clientWidth * 3 / 4,
+    ay: court.clientHeight / 5
+  }
+
+  // draw the middle line
+  context.setLineDash([30, 30]);
+  context.moveTo(court.clientWidth / 2, 0);
+  context.lineTo(court.clientWidth / 2, court.clientHeight);
+  context.stroke();
+  context.setLineDash([]);
 
   //draw a ball
   ball.draw();
@@ -51,6 +62,11 @@ function begin() {
 
   //draw the opponent_paddle
   opponent_paddle.draw();
+
+  //draw the scores
+  context.font = "30px sans-serif";
+  context.fillText(score.player, score.px, score.py);
+  context.fillText(score.ai, score.ax, score.ay);
 }
 
 begin();
