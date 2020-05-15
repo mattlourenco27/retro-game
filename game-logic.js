@@ -86,6 +86,13 @@ function Paddle(x) {
         ball.vel_y += 0.05 * (ball.y - this.y)
       }
     }
+  },
+
+  // moves the paddle
+  this.move = function() {
+    this.y += this.vel_y;
+    if(this.bot_edge() > court.height) this.y = court.height - this.height / 2;
+    if(this.top_edge() < 0) this.y = this.height / 2;
   }
 }
 
@@ -156,19 +163,13 @@ function game_loop() {
   player_paddle.draw();
 
   handle_player_movement();
-
-  player_paddle.y += player_paddle.vel_y;
-  if(player_paddle.y > court.height) player_paddle.y = court.height;
-  if(player_paddle.y < 0) player_paddle.y = 0;
+  player_paddle.move();
 
   //draw the opponent_paddle
   opponent_paddle.draw();
 
   handle_ai_movement();
-
-  opponent_paddle.y += opponent_paddle.vel_y;
-  if(opponent_paddle.y > court.height) opponent_paddle.y = court.height;
-  if(opponent_paddle.y < 0) opponent_paddle.y = 0;
+  opponent_paddle.move();
 
   //draw the scores
   context.font = "30px sans-serif";
