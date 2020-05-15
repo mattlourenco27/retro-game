@@ -62,11 +62,11 @@ function Paddle(x) {
     if(ball.y >= this.top_edge() && ball.y <= this.bot_edge()) {
       if(ball.x + ball.radius >= this.l_edge() && ball.x + ball.radius <= this.r_edge()) {
         ball.vel_x = -ball.vel_x;
-        ball.x -= 1;
+        ball.x = this.x - this.width / 2 - ball.radius - 1;
       }
       if(ball.x - ball.radius >= this.l_edge() && ball.x - ball.radius <= this.r_edge()) {
         ball.vel_x = -ball.vel_x;
-        ball.x += 1;
+        ball.x = this.x + this.width / 2 + ball.radius + 1;
       }
     }
   }
