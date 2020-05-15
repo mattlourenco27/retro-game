@@ -127,3 +127,8 @@ function game_loop() {
   context.fillText(score.player, score.px, score.py);
   context.fillText(score.ai, score.ax, score.ay);
 }
+
+function update_player_position(event) {
+  var rect = court.getBoundingClientRect();
+  player_paddle.y = event.clientY - rect.top;
+}
