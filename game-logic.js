@@ -7,6 +7,12 @@ context.strokeStyle = colour;
 context.fillStyle = colour;
 context.lineWidth = 2;
 
+var max_paddle_speed = 5;
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
 function Ball() {
   this.radius = 20;
   this.x = court.width / 2;
@@ -20,22 +26,26 @@ function Ball() {
   },
   //handles collisions with the borders of the court
   this.handleBorders = function() {
-    if(ball.x >= court.width) {
+    if(this.x >= court.width) {
       score.player += 1;
-      ball.x = court.width / 2;
-      ball.y = court.height / 2;
-    } else if(ball.x <= 0) {
+      this.x = court.width / 2;
+      this.y = court.height / 2;
+
+      this.vel_y = getRandomInt(7) - 3;
+    } else if(this.x <= 0) {
       score.ai += 1;
-      ball.x = court.width / 2;
-      ball.y = court.height / 2;
+      this.x = court.width / 2;
+      this.y = court.height / 2;
+
+      this.vel_y = getRandomInt(7) - 3;
     }
 
-    if(ball.y + ball.radius >= court.height) {
-      ball.vel_y = -ball.vel_y;
-      ball.y = court.height - ball.radius - 1;
-    } else if(ball.y - ball.radius <= 0) {
-      ball.vel_y = -ball.vel_y;
-      ball.y = ball.radius + 1;
+    if(this.y + this.radius >= court.height) {
+      this.vel_y = -this.vel_y;
+      this.y = court.height - this.radius - 1;
+    } else if(this.y - this.radius <= 0) {
+      this.vel_y = -this.vel_y;
+      this.y = this.radius + 1;
     }
   }
 }
@@ -47,6 +57,7 @@ function Paddle(x) {
   this.width = court.width / 30;
   this.x = x;
   this.y = court.height / 2;
+  this.vel_y = 0;
   this.top_edge = function() {return this.y - this.height / 2;}
   this.bot_edge = function() {return this.y + this.height / 2;}
   this.l_edge = function() {return this.x - this.width / 2;}
@@ -63,10 +74,16 @@ function Paddle(x) {
       if(ball.x + ball.radius >= this.l_edge() && ball.x + ball.radius <= this.r_edge()) {
         ball.vel_x = -ball.vel_x;
         ball.x = this.x - this.width / 2 - ball.radius - 1;
+
+        // add some concavity to the paddles
+        ball.vel_y += 0.05 * (ball.y - this.y)
       }
       if(ball.x - ball.radius >= this.l_edge() && ball.x - ball.radius <= this.r_edge()) {
         ball.vel_x = -ball.vel_x;
         ball.x = this.x + this.width / 2 + ball.radius + 1;
+
+        // add some concavity to the paddles
+        ball.vel_y += 0.05 * (ball.y - this.y)
       }
     }
   }
@@ -74,6 +91,23 @@ function Paddle(x) {
 
 var player_paddle = new Paddle(court.width / 60);
 var opponent_paddle = new Paddle(court.width * 59 / 60);
+
+function handle_player_movement() {
+  player_paddle.vel_y = 0.1 * (mouse.y - player_paddle.y);
+  if (player_paddle.vel_y > max_paddle_speed) player_paddle.vel_y = max_paddle_speed;
+  if (player_paddle.vel_y < -max_paddle_speed) player_paddle.vel_y = -max_paddle_speed;
+}
+
+function handle_ai_movement() {
+  opponent_paddle.vel_y = 0.1 * (ball.y - opponent_paddle.y);
+  if (opponent_paddle.vel_y > max_paddle_speed) opponent_paddle.vel_y = max_paddle_speed;
+  if (opponent_paddle.vel_y < -max_paddle_speed) opponent_paddle.vel_y = -max_paddle_speed;
+}
+
+var mouse = {
+  x: 0,
+  y: 0
+}
 
 var score = {
   player: 0,
@@ -83,6 +117,8 @@ var score = {
   ax: court.width * 3 / 4,
   ay: court.height / 5
 }
+
+court.addEventListener('mousemove', detect_mouse);
 
 ball.vel_x = 5;
 ball.vel_y = 0;
@@ -106,7 +142,7 @@ function game_loop() {
   context.stroke();
   context.setLineDash([]);
 
-  //draw a ball
+  //draw the ball
   ball.draw();
 
   ball.handleBorders();
@@ -119,8 +155,20 @@ function game_loop() {
   //draw the player-paddle
   player_paddle.draw();
 
+  handle_player_movement();
+
+  player_paddle.y += player_paddle.vel_y;
+  if(player_paddle.y > court.height) player_paddle.y = court.height;
+  if(player_paddle.y < 0) player_paddle.y = 0;
+
   //draw the opponent_paddle
   opponent_paddle.draw();
+
+  handle_ai_movement();
+
+  opponent_paddle.y += opponent_paddle.vel_y;
+  if(opponent_paddle.y > court.height) opponent_paddle.y = court.height;
+  if(opponent_paddle.y < 0) opponent_paddle.y = 0;
 
   //draw the scores
   context.font = "30px sans-serif";
@@ -128,7 +176,8 @@ function game_loop() {
   context.fillText(score.ai, score.ax, score.ay);
 }
 
-function update_player_position(event) {
+function detect_mouse(event) {
   var rect = court.getBoundingClientRect();
-  player_paddle.y = event.clientY - rect.top;
+  mouse.x = event.clientX - rect.left;
+  mouse.y = event.clientY - rect.top;
 }
