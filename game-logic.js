@@ -14,7 +14,7 @@ function getRandomInt(max) {
 }
 
 function Ball() {
-  this.radius = 20;
+  this.radius = 10;
   this.x = court.width / 2;
   this.y = court.height / 2;
   this.vel_x = 0;
@@ -52,10 +52,14 @@ function Ball() {
 
 var ball = new Ball();
 
-function Paddle(x) {
+function Paddle(player) {
   this.height = court.height / 4;
-  this.width = court.width / 30;
-  this.x = x;
+  this.width = court.width / 50;
+  if(player === true) {
+    this.x = this.width / 2;
+  } else if(player === false) {
+    this.x = court.width - this.width / 2;
+  }
   this.y = court.height / 2;
   this.vel_y = 0;
   this.top_edge = function() {return this.y - this.height / 2;}
@@ -96,8 +100,8 @@ function Paddle(x) {
   }
 }
 
-var player_paddle = new Paddle(court.width / 60);
-var opponent_paddle = new Paddle(court.width * 59 / 60);
+var player_paddle = new Paddle(true);
+var opponent_paddle = new Paddle(false);
 
 function handle_player_movement() {
   player_paddle.vel_y = 0.1 * (mouse.y - player_paddle.y);
@@ -127,7 +131,7 @@ var score = {
 
 court.addEventListener('mousemove', detect_mouse);
 
-ball.vel_x = 5;
+ball.vel_x = -5;
 ball.vel_y = 0;
 
 // begin the game loop running at 60fps
