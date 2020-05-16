@@ -4,20 +4,22 @@ body {
   font-family: 'Roboto Mono', monospace;
 }
 h1 {
-  text-align: center;
-  font-size: 2rem;
-  margin: 0;
+  text-align: right;
+  float: right;
+  font-size: 3rem;
   padding: 0;
+  margin: 0;
 }
 canvas {
   clear: left;
+  margin: 10px 0;
   background-color: black;
   border: 2px solid black;
 }
 #vbox-container {
   width: 960px;
   display: block;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 #pause-button {
   float: left;
@@ -36,4 +38,10 @@ canvas {
   height: 40px;
   margin: 10px 0;
   background-color: gray;
+}
+a {
+  float: left;
+  padding: 0;
+  margin: 0 0 0 10px;
+  border: 1px solid gray;
 }

@@ -142,10 +142,32 @@ ball.vel_x = -5;
 ball.vel_y = 0;
 
 var timerId;
+
+// Draw the splash screen
+// draw the middle line
+context.beginPath();
+context.setLineDash([30, 30]);
+context.moveTo(court.width / 2, 0);
+context.lineTo(court.width / 2, court.height);
+context.stroke();
+context.setLineDash([]);
+
+//draw the player-paddle
+player_paddle.draw();
+
+//draw the opponent_paddle
+opponent_paddle.draw();
+
 // Draw "Click to play" on the canvas
 context.font = "60px sans-serif";
 context.textAlign = "center";
 context.fillText("Click to play", court.width / 2, court.height / 2);
+
+//draw the scores
+context.font = "30px sans-serif";
+context.textAlign = "center";
+context.fillText(score.player, score.px, score.py);
+context.fillText(score.ai, score.ax, score.ay);
 
 function game_loop() {
   context.beginPath();
