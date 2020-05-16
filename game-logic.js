@@ -193,6 +193,7 @@ function game_loop() {
 
 function pause() {
   clearInterval(timerId);
+  timerId = undefined;
 
   document.getElementsByClassName("pause-bar")[0].style.backgroundColor = "gray";
   document.getElementsByClassName("pause-bar")[1].style.backgroundColor = "gray";
@@ -204,8 +205,10 @@ function pause() {
 }
 
 function resume() {
-  document.getElementsByClassName("pause-bar")[0].style.backgroundColor = "black";
-  document.getElementsByClassName("pause-bar")[1].style.backgroundColor = "black";
-  // begin the game loop running at 60fps
-  timerId = setInterval(game_loop, 1000 / 60);
+  if(timerId === undefined) {
+    document.getElementsByClassName("pause-bar")[0].style.backgroundColor = "black";
+    document.getElementsByClassName("pause-bar")[1].style.backgroundColor = "black";
+    // begin the game loop running at 60fps
+    timerId = setInterval(game_loop, 1000 / 60);
+  }
 }
