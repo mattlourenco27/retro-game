@@ -115,11 +115,6 @@ function handle_ai_movement() {
   if (opponent_paddle.vel_y < -max_paddle_speed) opponent_paddle.vel_y = -max_paddle_speed;
 }
 
-var mouse = {
-  x: 0,
-  y: 0
-}
-
 var score = {
   player: 0,
   ai: 0,
@@ -129,14 +124,28 @@ var score = {
   ay: court.height / 5
 }
 
+var mouse = {
+  x: 0,
+  y: 0
+}
+
+function detect_mouse(event) {
+  var rect = court.getBoundingClientRect();
+  mouse.x = event.clientX - rect.left;
+  mouse.y = event.clientY - rect.top;
+}
+
 court.addEventListener('mousemove', detect_mouse);
+court.addEventListener('mouseup', resume);
 
 ball.vel_x = -5;
 ball.vel_y = 0;
 
-// begin the game loop running at 60fps
-setInterval(game_loop, 1000 / 60);
-
+var timerId;
+// Draw "Click to play" on the canvas
+context.font = "60px sans-serif";
+context.textAlign = "center";
+context.fillText("Click to play", court.width / 2, court.height / 2);
 
 function game_loop() {
   context.beginPath();
@@ -177,12 +186,26 @@ function game_loop() {
 
   //draw the scores
   context.font = "30px sans-serif";
+  context.textAlign = "center";
   context.fillText(score.player, score.px, score.py);
   context.fillText(score.ai, score.ax, score.ay);
 }
 
-function detect_mouse(event) {
-  var rect = court.getBoundingClientRect();
-  mouse.x = event.clientX - rect.left;
-  mouse.y = event.clientY - rect.top;
+function pause() {
+  clearInterval(timerId);
+
+  document.getElementsByClassName("pause-bar")[0].style.backgroundColor = "gray";
+  document.getElementsByClassName("pause-bar")[1].style.backgroundColor = "gray";
+
+  // Draw "Click to play" on the canvas
+  context.font = "60px sans-serif";
+  context.textAlign = "center";
+  context.fillText("Click to play", court.width / 2, court.height / 2);
+}
+
+function resume() {
+  document.getElementsByClassName("pause-bar")[0].style.backgroundColor = "black";
+  document.getElementsByClassName("pause-bar")[1].style.backgroundColor = "black";
+  // begin the game loop running at 60fps
+  timerId = setInterval(game_loop, 1000 / 60);
 }

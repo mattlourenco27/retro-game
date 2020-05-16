@@ -5,13 +5,34 @@ body {
 }
 h1 {
   text-align: center;
-  font-size: 5rem;
+  font-size: 2rem;
   margin: 0;
   padding: 0;
 }
 canvas {
+  clear: left;
   background-color: black;
+  border: 2px solid black;
+}
+#vbox-container {
+  width: 960px;
   display: block;
   margin: 0 auto;
-  border: 2px solid black;
+}
+#pause-button {
+  float: left;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid gray;
+  text-align: center;
+}
+.pause-bar {
+  float left;
+  display: inline-block;
+  width: 12px;
+  height: 40px;
+  margin: 10px 0;
+  background-color: gray;
 }

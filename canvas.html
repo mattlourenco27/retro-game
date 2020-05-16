@@ -8,8 +8,14 @@
   <script src="game-logic.js" defer type="text/javascript"></script>
 </head>
 <body>
-  <h1> table-tennis </h1>
+  <h1>Welcome</h1>
   <br/>
-  <canvas id="court" width="960" height="720"></canvas>
+  <div id="vbox-container">
+    <div id="pause-button" onclick="pause();">
+      <span class="pause-bar"></span>
+      <span class="pause-bar"></span>
+    </div>
+    <canvas id="court" width="960" height="720"></canvas>
+</div>
 </body>
 </html>
